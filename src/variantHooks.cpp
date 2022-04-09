@@ -33,7 +33,7 @@
 #include <pico/time.h>
 
 /* FreeRTOS includes. */
-#include "RP2040_FreeRTOS.h"
+#include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
 
