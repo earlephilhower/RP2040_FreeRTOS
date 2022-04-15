@@ -54,6 +54,19 @@ void startFreeRTOS(void)
     vTaskStartScheduler();
 }
 
+
+/*-----------------------------------------------------------*/
+
+void prvDisableInterrupts()
+{
+    portDISABLE_INTERRUPTS();
+}
+
+void prvEnableInterrupts()
+{
+    portENABLE_INTERRUPTS();
+}
+
 /*-----------------------------------------------------------*/
 #if ( configUSE_IDLE_HOOK == 1 )
 /*
