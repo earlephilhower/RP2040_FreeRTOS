@@ -43,6 +43,56 @@ void initFreeRTOS(void)
 {
 }
 
+extern void setup() __attribute__((weak));
+extern void loop() __attribute__((weak));
+extern void setup1() __attribute__((weak));
+extern void loop1() __attribute__((weak));
+// Idle functions (USB, events, ...) from the core
+extern void __loop();
+
+static void __core0(void *params)
+{
+    (void) params;
+    if (setup) {
+        setup();
+    }
+    if (loop) {
+        while (1) {
+            loop();
+            __loop();
+        }
+    } else {
+        while (1) {
+            __loop();
+        }
+    }
+}
+
+static void __core1(void *params)
+{
+    (void) params;
+    if (setup1) {
+        setup1();
+    }
+    if (loop1) {
+        while (1) {
+            loop1();
+        }
+    } else {
+        while (1) {
+            vTaskDelay(1000);
+        }
+    }
+}   
+
+extern "C" void delay(unsigned long ms) {
+    vTaskDelay(ms / portTICK_PERIOD_MS);
+}
+
+extern "C" void yield() {
+    taskYIELD();
+}
+
 void startFreeRTOS(void)
 {
     // As the Task stacks are on heap before Task allocated heap variables,
@@ -50,7 +100,17 @@ void startFreeRTOS(void)
     // the library default __malloc_heap_end = 0 doesn't work.
     //__malloc_heap_end = (char *)(RAMEND - __malloc_margin);
 
-	// Initialise and run the freeRTOS scheduler. Execution should never return here.
+    TaskHandle_t c0;
+    xTaskCreate(__core0, "CORE0", 4096, 0, configMAX_PRIORITIES / 2, &c0);
+    vTaskCoreAffinitySet( c0, 1 << 0 ); 
+
+    if (setup1 || loop1) {
+        TaskHandle_t c1;
+        xTaskCreate(__core1, "CORE1", 4096, 0, configMAX_PRIORITIES / 2, &c1);
+        vTaskCoreAffinitySet( c1, 1 << 1 );
+    }
+
+    // Initialise and run the freeRTOS scheduler. Execution should never return here.
     vTaskStartScheduler();
 }
 
@@ -77,22 +137,14 @@ void prvEnableInterrupts()
  * NOTE: vApplicationIdleHook() MUST NOT, UNDER ANY CIRCUMSTANCES, CALL A FUNCTION THAT MIGHT BLOCK.
  *
  */
-void loop( void ) __attribute__((weak));
-void loop() {} //Empty loop function
 
 extern "C"
 void vApplicationIdleHook( void ) __attribute__((weak));
 
-// Idle functions (USB, events, ...) from the core
-extern void __loop();
 
 void vApplicationIdleHook( void )
 {
-	// the normal Arduino loop() function is run here.
-	loop();
-
-	// run idle functions from the core
-	__loop();
+    //__wfe(); // Low power idle if nothing to do...
 }
 
 #endif /* configUSE_IDLE_HOOK == 1 */

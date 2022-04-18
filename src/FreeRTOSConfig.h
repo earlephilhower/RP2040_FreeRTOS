@@ -27,8 +27,8 @@
 #define configSUPPORT_STATIC_ALLOCATION 0
 
 /* Run time stats related definitions. */
-//void vMainConfigureTimerForRunTimeStats( void );
-unsigned long ulMainGetRunTimeCounterValue( void );
+void vMainConfigureTimerForRunTimeStats( void );
+//unsigned long ulMainGetRunTimeCounterValue( void );
 #define configGENERATE_RUN_TIME_STATS	0
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() //vMainConfigureTimerForRunTimeStats()
 #define portGET_RUN_TIME_COUNTER_VALUE() ulMainGetRunTimeCounterValue()
