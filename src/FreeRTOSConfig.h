@@ -28,8 +28,8 @@
 
 /* Run time stats related definitions. */
 void vMainConfigureTimerForRunTimeStats( void );
-//unsigned long ulMainGetRunTimeCounterValue( void );
-#define configGENERATE_RUN_TIME_STATS	0
+unsigned long ulMainGetRunTimeCounterValue( void );
+#define configGENERATE_RUN_TIME_STATS	1
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() //vMainConfigureTimerForRunTimeStats()
 #define portGET_RUN_TIME_COUNTER_VALUE() ulMainGetRunTimeCounterValue()
 
