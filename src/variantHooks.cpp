@@ -95,23 +95,23 @@ extern "C" void yield() {
 
 void startFreeRTOS(void)
 {
-    // As the Task stacks are on heap before Task allocated heap variables,
-    // --- NOT NEEDED WHEN USING heap_3.c ---
-    // the library default __malloc_heap_end = 0 doesn't work.
-    //__malloc_heap_end = (char *)(RAMEND - __malloc_margin);
 
     TaskHandle_t c0;
-    xTaskCreate(__core0, "CORE0", 4096, 0, configMAX_PRIORITIES / 2, &c0);
+    xTaskCreate(__core0, "CORE0", 1024, 0, configMAX_PRIORITIES / 2, &c0);
     vTaskCoreAffinitySet( c0, 1 << 0 ); 
 
     if (setup1 || loop1) {
         TaskHandle_t c1;
-        xTaskCreate(__core1, "CORE1", 4096, 0, configMAX_PRIORITIES / 2, &c1);
+        xTaskCreate(__core1, "CORE1", 1024, 0, configMAX_PRIORITIES / 2, &c1);
         vTaskCoreAffinitySet( c1, 1 << 1 );
     }
 
     // Initialise and run the freeRTOS scheduler. Execution should never return here.
     vTaskStartScheduler();
+
+    while (true) {
+        /* noop */
+    }
 }
 
 
