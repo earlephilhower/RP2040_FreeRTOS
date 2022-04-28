@@ -1,3 +1,7 @@
+# This repo is no longer valid.  The wrapper functions are now part of the arduino-pico core.
+
+
+
 **ATTENTION**  
 Please be aware that this library was copied from the original Arduino AVR FreeRTOS library and may still contain files from that library that have no meaning in the context of this package, i.e. the licensing and code of conduct file! Each file retains the license and copyright from where it was taken (FreeRTOS repository or AVR FreeRTOS library, respectively.)
 
